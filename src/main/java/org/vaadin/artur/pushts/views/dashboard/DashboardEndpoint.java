@@ -1,11 +1,16 @@
 package org.vaadin.artur.pushts.views.dashboard;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import com.vaadin.flow.server.connect.Endpoint;
 import com.vaadin.flow.server.connect.auth.AnonymousAllowed;
+
+import reactor.core.publisher.Flux;
 
 /**
  * The endpoint for the client-side Dashboard View.
@@ -43,4 +48,12 @@ public class DashboardEndpoint {
       new ChartSeries("Berlin", 42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1)
     );
   }
+
+  public Flux<String> getStockPrices() {
+    Random random = new Random();
+    return Flux.<String>generate(sink -> {
+      sink.next(BigDecimal.valueOf(random.nextInt(10000), 2).toString());
+    }).delayElements(Duration.ofMillis(500)).take(30);
+  }
+
 }
