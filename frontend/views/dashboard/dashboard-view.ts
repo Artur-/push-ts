@@ -4,7 +4,7 @@ import "@vaadin/vaadin-charts/vaadin-chart";
 import "@vaadin/vaadin-grid/theme/lumo/vaadin-grid";
 import "@vaadin/vaadin-lumo-styles/all-imports";
 import { customElement, html, LitElement, property } from "lit-element";
-import { getStockPrices } from "../../generated/DashboardEndpoint";
+import * as DashboardEndpoint from "../../generated/DashboardEndpoint";
 
 @customElement("dashboard-view")
 export class DashboardView extends LitElement {
@@ -19,7 +19,7 @@ export class DashboardView extends LitElement {
   firstUpdated(changedProperties: any) {
     super.firstUpdated(changedProperties);
 
-    getStockPrices().addEventListener("message", (e) => {
+    DashboardEndpoint.getStockPrices().addEventListener("message", (e) => {
       this.data = [JSON.parse(e.data), ...this.data];
     });
   }
