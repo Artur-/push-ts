@@ -19,8 +19,11 @@ import reactor.core.publisher.Flux;
 @AnonymousAllowed
 public class DashboardEndpoint {
 
-  public List<HealthGridItem> healthGridItems() {
-    return Arrays.asList(new HealthGridItem(LocalDate.of(2019, 1, 14), "M\u00FCnster", "Germany", "Good", "badge"),
+  private List<HealthGridItem> items;
+
+  DashboardEndpoint() {
+    this.items = Arrays.asList(
+        new HealthGridItem(LocalDate.of(2019, 1, 14), "M\u00FCnster", "Germany", "Good", "badge"),
         new HealthGridItem(LocalDate.of(2019, 2, 14), "Cluj-Napoca", "Romania", "Good", "badge"),
         new HealthGridItem(LocalDate.of(2019, 3, 14), "Ciudad Victoria", "Mexico", "Good", "badge"),
         new HealthGridItem(LocalDate.of(2019, 4, 14), "Ebetsu", "Japan", "Excellent", "badge success"),
@@ -31,11 +34,19 @@ public class DashboardEndpoint {
         new HealthGridItem(LocalDate.of(2019, 9, 14), "Lancaster", "United States", "Excellent", "badge success"));
   }
 
+  public List<HealthGridItem> healthGridItems() {
+    return items;
+  }
+
+  public Flux<HealthGridItem> getItems() {
+    return Flux.<HealthGridItem>fromIterable(items).delayElements(Duration.ofMillis(500)).take(items.size());
+  }
+
   public Flux<String> getStockPrices() {
     Random random = new Random();
     return Flux.<String>generate(sink -> {
       sink.next(BigDecimal.valueOf(random.nextInt(10000), 2).toString());
-    }).delayElements(Duration.ofMillis(500)).take(30);
+    }).delayElements(Duration.ofMillis(800)).take(30);
   }
 
 }
