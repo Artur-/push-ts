@@ -7,6 +7,7 @@ import { Subscription } from "./generated/connect-client.default";
 import "@vaadin/vaadin-lumo-styles/badge";
 import { CSSModule } from "@vaadin/flow-frontend/css-utils";
 import HealthGridItem from "./generated/org/vaadin/artur/pushts/HealthGridItem";
+import { renderer } from "./renderer";
 @customElement("my-view")
 export class MyView extends LitElement {
   @internalProperty()
@@ -38,12 +39,13 @@ export class MyView extends LitElement {
           <vaadin-grid-column path="city"></vaadin-grid-column>
           <vaadin-grid-column path="country"></vaadin-grid-column>
           <vaadin-grid-column
-            ><template
-              ><span theme$="badge {{item.theme}}"
-                >{{item.status}}</span
-              ></template
-            ></vaadin-grid-column
+            header="Status"
+            .renderer="${renderer(
+              (item: HealthGridItem) =>
+                html`<span theme="badge ${item.theme}">${item.status}</span> `
+            )}"
           >
+          </vaadin-grid-column>
         </vaadin-grid>
       </vaadin-horizontal-layout>
     `;
