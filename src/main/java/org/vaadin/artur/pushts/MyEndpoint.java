@@ -1,4 +1,4 @@
-package org.vaadin.artur.pushts.views.dashboard;
+package org.vaadin.artur.pushts;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -12,16 +12,13 @@ import com.vaadin.flow.server.connect.auth.AnonymousAllowed;
 
 import reactor.core.publisher.Flux;
 
-/**
- * The endpoint for the client-side Dashboard View.
- */
 @Endpoint
 @AnonymousAllowed
-public class DashboardEndpoint {
+public class MyEndpoint {
 
   private List<HealthGridItem> items;
 
-  DashboardEndpoint() {
+  public MyEndpoint() {
     this.items = new ArrayList<>();
     this.items.add(new HealthGridItem(LocalDate.of(2019, 1, 14), "M\u00FCnster", "Germany", "Good", "badge"));
     this.items.add(new HealthGridItem(LocalDate.of(2019, 2, 14), "Cluj-Napoca", "Romania", "Good", "badge"));

@@ -1,13 +1,14 @@
-// web components used in the view
 import "@vaadin/vaadin-ordered-layout";
 import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-lumo-styles/all-imports";
 import { customElement, html, internalProperty, LitElement } from "lit-element";
-import * as DashboardEndpoint from "../../generated/DashboardEndpoint";
-import { Subscription } from "../../generated/connect-client.default";
+import * as MyEndpoint from "./generated/MyEndpoint";
+import { Subscription } from "./generated/connect-client.default";
+import "@vaadin/vaadin-lumo-styles/badge";
+import { CSSModule } from "@vaadin/flow-frontend/css-utils";
 
-@customElement("dashboard-view")
-export class DashboardView extends LitElement {
+@customElement("my-view")
+export class MyView extends LitElement {
   @internalProperty()
   data: any[] = [];
 
@@ -18,6 +19,9 @@ export class DashboardView extends LitElement {
 
   subscriptions: Subscription[] = [];
 
+  static get styles() {
+    return [CSSModule("lumo-badge")];
+  }
   render() {
     return html`
       <vaadin-horizontal-layout theme="spacing">
@@ -33,7 +37,13 @@ export class DashboardView extends LitElement {
           <vaadin-grid-column path="itemDate"></vaadin-grid-column>
           <vaadin-grid-column path="city"></vaadin-grid-column>
           <vaadin-grid-column path="country"></vaadin-grid-column>
-          <vaadin-grid-column path="status"></vaadin-grid-column>
+          <vaadin-grid-column
+            ><template
+              ><span theme$="badge {{item.theme}}"
+                >{{item.status}}</span
+              ></template
+            ></vaadin-grid-column
+          >
         </vaadin-grid>
       </vaadin-horizontal-layout>
     `;
@@ -43,18 +53,18 @@ export class DashboardView extends LitElement {
     super.connectedCallback();
 
     this.subscriptions.push(
-      DashboardEndpoint.getItems((data) => {
+      MyEndpoint.getItems((data) => {
         this.data = [data, ...this.data];
       })
     );
 
     this.subscriptions.push(
-      DashboardEndpoint.getStockPrices("AAPL", (priceString) => {
+      MyEndpoint.getStockPrices("AAPL", (priceString) => {
         this.applPrices = [...this.applPrices, priceString];
       })
     );
     this.subscriptions.push(
-      DashboardEndpoint.getStockPrices("MSFT", (priceString) => {
+      MyEndpoint.getStockPrices("MSFT", (priceString) => {
         this.msftPrices = [...this.msftPrices, priceString];
       })
     );

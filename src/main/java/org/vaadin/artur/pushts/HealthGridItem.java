@@ -1,10 +1,7 @@
-package org.vaadin.artur.pushts.views.dashboard;
+package org.vaadin.artur.pushts;
 
 import java.time.LocalDate;
 
-/**
- * Simple DTO class for the inbox list to demonstrate complex object data
- */
 public class HealthGridItem {
 
     private LocalDate itemDate;
