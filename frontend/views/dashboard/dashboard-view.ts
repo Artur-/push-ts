@@ -1,16 +1,27 @@
 // web components used in the view
 import "@vaadin/vaadin-ordered-layout";
+import "@vaadin/vaadin-grid";
 import "@vaadin/vaadin-lumo-styles/all-imports";
-import { customElement, html, LitElement, property } from "lit-element";
+import {
+  customElement,
+  html,
+  internalProperty,
+  LitElement,
+  property,
+} from "lit-element";
 import * as DashboardEndpoint from "../../generated/DashboardEndpoint";
+import { Subscription } from "../../generated/connect-client.default";
 
 @customElement("dashboard-view")
 export class DashboardView extends LitElement {
-  @property({ type: Array })
+  @internalProperty()
   data: any[] = [];
 
   @property({ type: Array })
   prices: string[] = [];
+
+  subscriptions: Subscription[] = [];
+
   render() {
     return html`
       <vaadin-horizontal-layout theme="spacing">
@@ -18,10 +29,13 @@ export class DashboardView extends LitElement {
           <h2>Stock prices</h2>
           ${this.prices.map((item) => html`<div>${item}</div>`)}
         </div>
-        <div>
-          <h2>Health items</h2>
-          <p>${this.data.map((item) => html`<div>${item}</div>`)}</p>
-        </div>
+        <vaadin-grid label="Health items" .items=${this.data}>
+          <vaadin-grid-column path="itemDate"></vaadin-grid-column>
+          <vaadin-grid-column path="city"></vaadin-grid-column>
+          <vaadin-grid-column path="country"></vaadin-grid-column>
+          <vaadin-grid-column path="status"></vaadin-grid-column>
+          <vaadin-grid-column path="theme"></vaadin-grid-column>
+        </vaadin-grid>
       </vaadin-horizontal-layout>
     `;
   }
@@ -29,12 +43,23 @@ export class DashboardView extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    DashboardEndpoint.getItems((data) => {
-      this.data = [data, ...this.data];
-    });
+    this.subscriptions.push(
+      DashboardEndpoint.getItems((data) => {
+        this.data = [data, ...this.data];
+      })
+    );
 
-    DashboardEndpoint.getStockPrices((priceString) => {
-      this.prices = [...this.prices, priceString];
+    this.subscriptions.push(
+      DashboardEndpoint.getStockPrices((priceString) => {
+        this.prices = [...this.prices, priceString];
+      })
+    );
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
     });
+    this.subscriptions = [];
   }
 }
