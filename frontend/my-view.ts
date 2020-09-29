@@ -6,11 +6,11 @@ import * as MyEndpoint from "./generated/MyEndpoint";
 import { Subscription } from "./generated/connect-client.default";
 import "@vaadin/vaadin-lumo-styles/badge";
 import { CSSModule } from "@vaadin/flow-frontend/css-utils";
-
+import HealthGridItem from "./generated/org/vaadin/artur/pushts/HealthGridItem";
 @customElement("my-view")
 export class MyView extends LitElement {
   @internalProperty()
-  data: any[] = [];
+  data: HealthGridItem[] = [];
 
   @internalProperty()
   applPrices: string[] = [];
